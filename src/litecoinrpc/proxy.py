@@ -19,17 +19,11 @@
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 """
 
-try:
-    import http.client as httplib
-except ImportError:
-    import httplib
+import http.client
 import base64
 import json
 import decimal
-try:
-    import urllib.parse as urlparse
-except ImportError:
-    import urlparse
+import urllib.parse
 from collections import defaultdict, deque
 from litecoinrpc.exceptions import TransportException
 
@@ -47,7 +41,7 @@ class JSONRPCException(Exception):
 class HTTPTransport(object):
     def __init__(self, service_url):
         self.service_url = service_url
-        self.parsed_url = urlparse.urlparse(service_url)
+        self.parsed_url = urllib.parse.urlparse(service_url)
         if self.parsed_url.port is None:
             port = 80
         else:
@@ -57,11 +51,11 @@ class HTTPTransport(object):
         authpair = authpair.encode('utf8')
         self.auth_header = "Basic ".encode('utf8') + base64.b64encode(authpair)
         if self.parsed_url.scheme == 'https':
-            self.connection = httplib.HTTPSConnection(self.parsed_url.hostname,
+            self.connection = http.client.HTTPSConnection(self.parsed_url.hostname,
                                                       port, None, None, False,
                                                       HTTP_TIMEOUT)
         else:
-            self.connection = httplib.HTTPConnection(self.parsed_url.hostname,
+            self.connection = http.client.HTTPConnection(self.parsed_url.hostname,
                                                      port, False, HTTP_TIMEOUT)
 
     def request(self, serialized_data):
@@ -75,7 +69,7 @@ class HTTPTransport(object):
         if httpresp is None:
             raise JSONRPCException({
                 'code': -342, 'message': 'missing HTTP response from server'})
-        elif httpresp.status == httplib.FORBIDDEN:
+        elif httpresp.status == http.client.FORBIDDEN:
             msg = "litecoind returns 403 Forbidden. Is your IP allowed?"
             raise TransportException(msg, code = 403, protocol = "HTTP", raw_detail = httpresp)
 

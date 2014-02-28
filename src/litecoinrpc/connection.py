@@ -448,7 +448,7 @@ class LitecoinConnection(object):
             if as_dict:
                 return dict(self.proxy.listaccounts(minconf))
             else:
-                return self.proxy.listaccounts(minconf).keys()
+                return list(self.proxy.listaccounts(minconf).keys())
         except JSONRPCException as e:
             raise _wrap_exception(e.error)
 
@@ -484,7 +484,7 @@ class LitecoinConnection(object):
         - *from_* -- Skip the first <from_> transactions.
         - *address* -- Receive address to consider
         """
-        accounts = [account] if account is not None else self.listaccounts(as_dict=True).iterkeys()
+        accounts = [account] if account is not None else iter(self.listaccounts(as_dict=True).keys())
         try:
             return [TransactionInfo(**tx) for acc in accounts for
                     tx in self.proxy.listtransactions(acc, count, from_) if

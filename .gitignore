@@ -3,4 +3,4 @@
 sphinx/build
 build
 dist
-src/bitcoin_python.egg-info
+src/litecoin_python.egg-info

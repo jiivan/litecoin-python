@@ -1,3 +1,7 @@
+2014-02-28  Dariusz Rybi <darek.rybi@bitstar.pl>
+
+	* Migrated to python3
+
 2013-03-30  Wladimir van der Laan <laanwj@gmail.com>
 
 	* Release 0.3
